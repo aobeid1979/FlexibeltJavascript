@@ -1,111 +1,132 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const questionContainer = document.getElementById('question-container');
-    const questionElement = document.getElementById('question');
-    const optionsElement = document.getElementById('options');
-    const feedbackElement = document.getElementById('feedback');
-    const nextButton = document.getElementById('next-btn');
+document.addEventListener("DOMContentLoaded", function () {
+	const questionElement = document.getElementById("question");
+	const optionsElement = document.getElementById("options");
+	const feedbackElement = document.getElementById("feedback");
+	const nextButton = document.getElementById("next-btn");
+	const progressText = document.getElementById("progressText");
+	const score = document.getElementById("score");
+	const progressBar = document.getElementById("progressBar");
+	let totalScoreElement = document.getElementById("totalScore");
 
-    let currentQuestionIndex = 0;
-    let correctAnswers = 0;
+	let currentQuestionIndex = 0;
+	let correctAnswers = 0;
 
-    // Hämta frågorna från API:et
-    function fetchQuestions() {
-        fetch('https://da-demo.github.io/api/futurama/questions/')
-            .then(response => response.json())
-            .then(data => {
-                if (Array.isArray(data)) {
-                    data.forEach(question => {
-                        fetchAnswers(question.id)
-                            .then(answers => {
-                                question.answers = answers;
-                                displayQuestion(question);
-                            })
-                            .catch(error => console.error('Error fetching answers:', error));
-                    });
-                } else {
-                    console.error('Invalid data format:', data);
-                }
-            })
-            .catch(error => console.error('Error fetching questions:', error));
-    }
-    
-    function fetchAnswers(questionId) {
-        return fetch(`https://da-demo.github.io/api/futurama/questions/${questionId}/answers`)
-            .then(response => {
-                console.log(response); // Logga den återvända responsen för att inspektera den
-                return response.json();
-            })
-            .then(data => data.answers)
-            .catch(error => {
-                console.error('Error fetching answers:', error);
-                return [];
-            });
-    }
-    
-    
-    
-    function displayQuestion(question) {
-        questionElement.textContent = question.question;
-        optionsElement.innerHTML = '';
-        question.answers.forEach(answer => {
-            const optionElement = document.createElement('li');
-            optionElement.textContent = answer;
-            optionElement.addEventListener('click', () => checkAnswer(answer === question.correct_answer));
-            optionsElement.appendChild(optionElement);
-        });
-    }
-    
+	let questions = [];
 
-    // Kontrollera svaret och visa feedback
-    function checkAnswer(isCorrect) {
-        if (isCorrect) {
-            feedbackElement.textContent = 'Rätt svar!';
-            correctAnswers++;
-        } else {
-            feedbackElement.textContent = 'Fel svar. Det korrekta svaret är: ' + getCurrentQuestion().answer;
-        }
-        disableOptions();
-        showNextButton();
-    }
+	// Fetch the questions from the API
+	async function fetchQuestions() {
+		await fetch("https://da-demo.github.io/api/futurama/questions/")
+			.then((response) => response.json())
+			.then((data) => {
+				questions = data.map((q) => {
+					const shuffledAnswers = [...q.possibleAnswers].sort(() => Math.random() - 0.5);
+					return {
+						question: q.question,
+						answers: shuffledAnswers,
+						correct_answer: shuffledAnswers.indexOf(q.correctAnswer),
+					};
+				});
+				console.log(questions);
+			})
+			.catch((error) => console.error("Error fetching questions:", error));
+	}
 
-    // Inaktivera svarsalternativen efter att ett svar har valts
-    function disableOptions() {
-        const optionElements = optionsElement.querySelectorAll('li');
-        optionElements.forEach(option => {
-            option.removeEventListener('click', checkAnswer);
-            option.style.pointerEvents = 'none';
-        });
-    }
+	function getRandomQuestions(questions) {
+		let randomQuestions = [];
+		for (let i = 0; i < Math.min(10, questions.length); i++) {
+			let randomIndex = Math.floor(Math.random() * questions.length);
+			let question = questions[randomIndex];
+			if (question && question.answers) {
+				randomQuestions.push(question);
+				questions.splice(randomIndex, 1);
+			} else {
+				console.error("Invalid question object:", question);
+			}
+		}
+		return randomQuestions;
+	}
 
-    // Visa nästa fråga eller resultatet
-    function showNextButton() {
-        if (currentQuestionIndex < 9) {
-            nextButton.style.display = 'block';
-        } else {
-            nextButton.textContent = 'Visa resultat';
-            nextButton.addEventListener('click', showResult);
-        }
-    }
+	// Display the current question
+	function displayQuestion(question, questionNumber, totalQuestions) {
+		progressText.textContent = `Fråga ${questionNumber + 1} av ${totalQuestions}`;
+		questionElement.textContent = question.question;
+		optionsElement.innerHTML = "";
+		question.answers.forEach((answer, index) => {
+			const optionElement = document.createElement("li");
+			optionElement.textContent = answer;
+			optionElement.addEventListener("click", () => checkAnswer(index === question.correct_answer));
+			optionsElement.appendChild(optionElement);
+		});
+	}
 
-    // Visa resultatet efter att alla frågor har besvarats
-    function showResult() {
-        feedbackElement.textContent = `Du fick ${correctAnswers} av 10 frågor rätt.`;
-        nextButton.style.display = 'none';
-    }
+	// Check the answer
+	function checkAnswer(isCorrect) {
+		// Retrieve the total score and total questions from local storage
+		let totalScore = localStorage.getItem("totalScore");
+		let totalQuestions = localStorage.getItem("totalQuestions");
 
-    // Hämta den aktuella frågan
-function getCurrentQuestion() {
-    return questions[currentQuestionIndex];
-}
+		// If they don't exist yet, initialize them to 0
+		if (totalScore === null) totalScore = 0;
+		if (totalQuestions === null) totalQuestions = 1;
 
+		// Convert them to numbers (they are stored as strings)
+		totalScore = Number(totalScore);
+		totalQuestions = Number(totalQuestions);
 
-    // Hantera klick på Nästa fråga-knappen
-    nextButton.addEventListener('click', () => {
-        currentQuestionIndex++;
-        feedbackElement.textContent = '';
-        fetchQuestions();
-    });
+		if (isCorrect) {
+			correctAnswers++;
+			totalScore++; // Increase the total score
+			feedbackElement.textContent = "Rätt svar!";
+		} else {
+			feedbackElement.textContent = "Fel svar!";
+		}
 
-    // Starta applikationen genom att hämta frågorna
-    fetchQuestions();
+		totalQuestions++; // Increase the total questions
+
+		// Store the updated total score and total questions in local storage
+		localStorage.setItem("totalScore", totalScore);
+		localStorage.setItem("totalQuestions", totalQuestions);
+
+		totalScoreElement.textContent = `${totalScore} av ${totalQuestions}`;
+
+		// Display the next question or final score
+		currentQuestionIndex++;
+		if (currentQuestionIndex < questions.length) {
+			// When a question is answered...
+			updateProgressBar(currentQuestionIndex, questions.length);
+			displayQuestion(questions[currentQuestionIndex], currentQuestionIndex, questions.length);
+		} else {
+			// Disable the options
+			const options = document.querySelectorAll("#options li");
+			options.forEach((option) => {
+				option.style.pointerEvents = "none";
+			});
+			feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+		}
+	}
+
+	// Start a new quiz
+	nextButton.addEventListener("click", () => {
+		location.reload();
+	});
+
+	function updateProgressBar(currentQuestionIndex, totalQuestions) {
+		const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+		let scoreValue = Math.floor((correctAnswers / totalQuestions) * 10);
+		score.textContent = `${scoreValue} av 10`;
+		progressBar.style.width = progress + "%";
+	}
+
+	// Fetch the questions and start the quiz
+	fetchQuestions().then(() => {
+		questions = getRandomQuestions(questions);
+		if (questions.length > 0) {
+			totalScoreElement.textContent = `${localStorage.getItem(
+				"totalScore"
+			)} av ${localStorage.getItem("totalQuestions")}`;
+			displayQuestion(questions[0], 0, questions.length);
+		} else {
+			console.error("No questions to display");
+		}
+	});
 });
