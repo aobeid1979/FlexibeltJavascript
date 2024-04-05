@@ -1,6 +1,6 @@
 body {
 	font-family: Arial, sans-serif;
-	background: radial-gradient(circle, #613fb8, #21189e);
+	background: radial-gradient(circle, #b293ff, #090820);
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -12,7 +12,7 @@ body {
 #game-container {
 	width: 80%;
 	max-width: 800px;
-	background-color: rgb(147, 151, 255);
+	background-color: rgb(161, 173, 255);
 	border-radius: 5px;
 	padding: 20px;
 	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.2);
@@ -61,22 +61,26 @@ body {
 
 #options li {
 	padding: 10px;
-	background-color: #dad1ff;
+	background-color: #bacaff; /* Gold */
 	border: 1px solid #353535;
 	border-radius: 5px;
 	margin-bottom: 10px;
 	cursor: pointer;
 	color: #111;
+	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.2); /* Add shadow */
+	transition: transform 0.3s ease; /* Add transition for hover effect */
 }
 
 #options li:hover {
 	cursor: pointer;
-	background-color: #ffffff;
+	background-color: #b1c3ff; /* Orange */
+	transform: scale(1.05); /* Slightly enlarge the option on hover */
 }
 
 #feedback {
 	margin-top: 20px;
 	font-size: 18px;
+	color: #008000; /* Green */
 }
 
 #next-btn {
@@ -88,11 +92,12 @@ body {
 	cursor: pointer;
 	font-size: 18px;
 	border: 1px solid #000000;
+	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.2); /* Add shadow */
+	transition: background-color 0.3s ease; /* Add transition for hover effect */
 }
 
 #next-btn:hover {
-	background-color: #3d81ff;
-	border: 1px solid #000000;
+	background-color: #1e90ff; /* DodgerBlue */
 }
 
 #score,
