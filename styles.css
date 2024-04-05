@@ -1,6 +1,6 @@
 body {
 	font-family: Arial, sans-serif;
-	background: radial-gradient(circle, #b293ff, #090820);
+	background-image: url(images/596243.jpg);
 	margin: 0;
 	padding: 0;
 	display: flex;
@@ -80,7 +80,7 @@ body {
 #feedback {
 	margin-top: 20px;
 	font-size: 18px;
-	color: #000; /* Green */
+	
 }
 
 #next-btn {

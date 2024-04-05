@@ -77,8 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			correctAnswers++;
 			totalScore++; // Increase the total score
 			feedbackElement.textContent = "Rätt svar!";
+			feedbackElement.style.color = "#008000"
 		} else {
+
 			feedbackElement.textContent = "Fel svar!";
+			feedbackElement.style.color = "#ff0000"
+			
 		}
 
 		totalQuestions++; // Increase the total questions
@@ -104,7 +108,16 @@ document.addEventListener("DOMContentLoaded", function () {
 			options.forEach((option) => {
 				option.style.pointerEvents = "none";
 			});
-			feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			if(correctAnswers<5){
+				feedbackElement.style.color = "#ff0000"
+				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			}
+			else{
+				feedbackElement.style.color = "#008000"
+				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			}
+			
+		
 		}
 	}
 
