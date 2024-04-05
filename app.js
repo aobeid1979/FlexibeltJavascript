@@ -91,9 +91,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// Display the next question or final score
 		currentQuestionIndex++;
-		if (currentQuestionIndex < questions.length) {
+		if (currentQuestionIndex <= questions.length) {
 			// When a question is answered...
 			updateProgressBar(currentQuestionIndex, questions.length);
+		}
+
+		if (currentQuestionIndex < questions.length) {
 			displayQuestion(questions[currentQuestionIndex], currentQuestionIndex, questions.length);
 		} else {
 			// Disable the options
@@ -111,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	function updateProgressBar(currentQuestionIndex, totalQuestions) {
-		const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+		const progress = (currentQuestionIndex / totalQuestions) * 100;
 		let scoreValue = Math.floor((correctAnswers / totalQuestions) * 10);
 		score.textContent = `${scoreValue} av 10`;
 		progressBar.style.width = progress + "%";
