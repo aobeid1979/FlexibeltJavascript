@@ -77,8 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
 			correctAnswers++;
 			totalScore++; // Increase the total score
 			feedbackElement.textContent = "Rätt svar!";
+			feedbackElement.style.color = "#008000"
 		} else {
+
 			feedbackElement.textContent = "Fel svar!";
+			feedbackElement.style.color = "#ff0000"
+			
 		}
 
 		totalQuestions++; // Increase the total questions
@@ -91,9 +95,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// Display the next question or final score
 		currentQuestionIndex++;
-		if (currentQuestionIndex < questions.length) {
+		if (currentQuestionIndex <= questions.length) {
 			// When a question is answered...
 			updateProgressBar(currentQuestionIndex, questions.length);
+		}
+
+		if (currentQuestionIndex < questions.length) {
 			displayQuestion(questions[currentQuestionIndex], currentQuestionIndex, questions.length);
 		} else {
 			// Disable the options
@@ -101,7 +108,16 @@ document.addEventListener("DOMContentLoaded", function () {
 			options.forEach((option) => {
 				option.style.pointerEvents = "none";
 			});
-			feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			if(correctAnswers<5){
+				feedbackElement.style.color = "#ff0000"
+				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			}
+			else{
+				feedbackElement.style.color = "#008000"
+				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+			}
+			
+		
 		}
 	}
 
@@ -111,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	function updateProgressBar(currentQuestionIndex, totalQuestions) {
-		const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+		const progress = (currentQuestionIndex / totalQuestions) * 100;
 		let scoreValue = Math.floor((correctAnswers / totalQuestions) * 10);
 		score.textContent = `${scoreValue} av 10`;
 		progressBar.style.width = progress + "%";
