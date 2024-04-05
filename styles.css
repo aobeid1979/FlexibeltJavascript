@@ -29,10 +29,11 @@ body {
 
 #hud-item {
 	flex: 1;
-	background-color: #8ca5ff;
-	padding: 10px;
-	border-radius: 20px;
-	text-align: center;
+	background-color: #8ca5ff; /* Add background color */
+	padding: 10px; /* Add padding */
+	border-radius: 20px; /* Add border-radius */
+	color: #fff; /* Change text color to white for better contrast */
+	text-align: center; /* Center the text */
 }
 
 #progressText {

@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	// Display the current question
 	function displayQuestion(question, questionNumber, totalQuestions) {
-		progressText.textContent = `Fråga ${questionNumber + 1} av ${totalQuestions}`;
+		progressText.textContent = `Question ${questionNumber + 1} out of ${totalQuestions}`;
 		questionElement.textContent = question.question;
 		optionsElement.innerHTML = "";
 		question.answers.forEach((answer, index) => {
@@ -76,14 +76,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		if (isCorrect) {
 			correctAnswers++;
 			totalScore++; // Increase the total score
-			feedbackElement.textContent = "Rätt svar!";
+			feedbackElement.textContent = "Right answer!";
 			feedbackElement.style.color = "#ffffff";
 			feedbackElement.style.backgroundColor = "#006400";
 			feedbackElement.style.padding = "10px";
 			feedbackElement.style.borderRadius = "20px";
 			feedbackElement.style.display = "inline-block";
 		} else {
-			feedbackElement.textContent = "Fel svar!";
+			feedbackElement.textContent = "Wrong Answer!";
 			feedbackElement.style.color = "#ffffff";
 			feedbackElement.style.backgroundColor = "#800000";
 			feedbackElement.style.padding = "10px";
@@ -120,14 +120,14 @@ document.addEventListener("DOMContentLoaded", function () {
 				feedbackElement.style.padding = "10px";
 				feedbackElement.style.borderRadius = "20px";
 				feedbackElement.style.display = "inline-block";
-				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+				feedbackElement.textContent = `You had ${correctAnswers} out of ${questions.length} right!`;
 			} else {
 				feedbackElement.style.color = "#ffffff";
 				feedbackElement.style.backgroundColor = "#006400";
 				feedbackElement.style.padding = "10px";
 				feedbackElement.style.borderRadius = "20px";
 				feedbackElement.style.display = "inline-block";
-				feedbackElement.textContent = `Du fick ${correctAnswers} av ${questions.length} rätt!`;
+				feedbackElement.textContent = `You had ${correctAnswers} out of ${questions.length} right!`;
 			}
 		}
 	}
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	function updateProgressBar(currentQuestionIndex, totalQuestions) {
 		const progress = (currentQuestionIndex / totalQuestions) * 100;
 		let scoreValue = Math.floor((correctAnswers / totalQuestions) * 10);
-		score.textContent = `${scoreValue} av 10`;
+		score.textContent = `${scoreValue} out of 10`;
 		progressBar.style.width = progress + "%";
 	}
 
